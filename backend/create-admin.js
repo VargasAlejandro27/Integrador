@@ -28,16 +28,28 @@ async function createAdmin() {
     const saltRounds = 10;
     const passwordHash = await bcrypt.hash(password, saltRounds);
     
-    // Insertar usuario admin en la base de datos
-    const result = await pool.query(
-      'INSERT INTO users (email, name, password_hash, role) VALUES ($1, $2, $3, $4) RETURNING id, email, name, role',
-      [email, name, passwordHash, 'admin']
-    );
-    
-    console.log('✅ Usuario administrador creado exitosamente');
-    console.log('📧 Email:', result.rows[0].email);
-    console.log('🔐 Contraseña: ' + password);
-    console.log('\n⚠️  IMPORTANTE: Cambia la contraseña después de tu primer login');
+    const client = await pool.connect();
+    try {
+      await client.query('BEGIN');
+
+      // Insertar usuario admin usando stored procedure
+      const result = await client.query(
+        'SELECT * FROM register_user($1, $2, $3, $4)',
+        [email.toLowerCase().trim(), name, passwordHash, 'admin']
+      );
+
+      await client.query('COMMIT');
+
+      console.log('✅ Usuario administrador creado exitosamente');
+      console.log('📧 Email:', result.rows[0].email);
+      console.log('🔐 Contraseña: ' + password);
+      console.log('\n⚠️  IMPORTANTE: Cambia la contraseña después de tu primer login');
+    } catch (err) {
+      await client.query('ROLLBACK');
+      throw err;
+    } finally {
+      client.release();
+    }
     
     process.exit(0);
   } catch (err) {

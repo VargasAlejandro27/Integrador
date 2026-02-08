@@ -10,7 +10,7 @@ export default function Results(){
   const [error, setError] = useState('')
 
   useEffect(()=>{
-    fetch('/api/resultados/' + id)
+    fetch('/api/resultados/' + id, { credentials: 'include' })
       .then(r=> {
         if (!r.ok) throw new Error('No autorizado')
         return r.json()

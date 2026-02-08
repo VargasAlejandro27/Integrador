@@ -7,9 +7,12 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // Revisa sesión en el backend (usa endpoint existente que devuelve user o null)
-    fetch('/api/calcular', { credentials: 'include' })
-      .then(res => res.json())
+    // Revisa sesión en el backend
+    fetch('/api/me', { credentials: 'include' })
+      .then(async res => {
+        if (!res.ok) return { user: null }
+        return res.json()
+      })
       .then(data => {
         setUser(data.user || null)
       })
