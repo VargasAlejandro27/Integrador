@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultados - EcoCalc</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="/"><i class="bi bi-tree"></i> EcoCalc</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="/">Inicio</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/calcular">Calcular</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/consejos">Consejos</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/historial">Historial</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/acerca">Acerca</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/logout" style="color: #e74c3c;"><i class="bi bi-box-arrow-right"></i> Cerrar Sesión</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="content-wrapper">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <!-- Resultado Principal -->
+                    <div class="card p-5 mb-4 text-center">
+                        <h2 class="mb-3">Tu Huella de Carbono</h2>
+                        <div class="display-1 fw-bold text-primary mb-2">
+                            <%= calculation.emissions.total %>
+                        </div>
+                        <p class="lead text-muted mb-3">kg CO₂ por año</p>
+                        
+                        <div class="mb-3">
+                            <span class="level-badge level-<%= calculation.emissions.level %>">
+                                <%= calculation.emissions.level === 'excelente' ? 'Excelente' :
+                                   calculation.emissions.level === 'bueno' ? 'Bueno' :
+                                   calculation.emissions.level === 'promedio' ? 'Promedio' :
+                                   calculation.emissions.level === 'alto' ? 'Alto' : 'Muy Alto' %>
+                            </span>
+                        </div>
+                        
+                        <p class="text-muted">Calculado para: <strong><%= calculation.name %></strong></p>
+                        <small class="text-muted"><%= new Date(calculation.createdAt).toLocaleString('es') %></small>
+                    </div>
+
+                    <!-- Comparaciones -->
+                    <div class="row g-4 mb-4">
+                        <div class="col-md-6">
+                            <div class="comparison-card">
+                                <h5>vs. Promedio Mundial</h5>
+                                <div class="comparison-value <%= comparisons.world < 0 ? 'comparison-positive' : 'comparison-negative' %>">
+                                    <%= comparisons.world > 0 ? '+' : '' %><%= comparisons.world %>%
+                                </div>
+                                <p class="text-muted mb-0">
+                                    <%= comparisons.world < 0 ? '¡Por debajo del promedio!' : 'Por encima del promedio' %>
+                                </p>
+                                <small>Promedio: <%= worldAverage %> kg</small>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="comparison-card">
+                                <h5>vs. Promedio Nacional</h5>
+                                <div class="comparison-value <%= comparisons.country < 0 ? 'comparison-positive' : 'comparison-negative' %>">
+                                    <%= comparisons.country > 0 ? '+' : '' %><%= comparisons.country %>%
+                                </div>
+                                <p class="text-muted mb-0">
+                                    <%= comparisons.country < 0 ? '¡Por debajo del promedio!' : 'Por encima del promedio' %>
+                                </p>
+                                <small>Promedio: <%= countryAverage %> kg</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Desglose -->
+                    <div class="card p-4 mb-4">
+                        <h3 class="mb-4"><i class="bi bi-pie-chart"></i> Desglose de Emisiones</h3>
+                        
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span><i class="bi bi-car-front"></i> Transporte</span>
+                                <span><%= calculation.emissions.transport %> kg (<%= percentages.transport %>%)</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar bg-info" style="width: <%= percentages.transport %>%"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span><i class="bi bi-lightning"></i> Energía</span>
+                                <span><%= calculation.emissions.energy %> kg (<%= percentages.energy %>%)</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar bg-warning" style="width: <%= percentages.energy %>%"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span><i class="bi bi-egg-fried"></i> Alimentación</span>
+                                <span><%= calculation.emissions.food %> kg (<%= percentages.food %>%)</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar bg-success" style="width: <%= percentages.food %>%"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span><i class="bi bi-cart"></i> Consumo</span>
+                                <span><%= calculation.emissions.consumption %> kg (<%= percentages.consumption %>%)</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar" style="width: <%= percentages.consumption %>%; background: #9b59b6"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Consejos -->
+                    <div class="card p-4 mb-4">
+                        <h3 class="mb-4"><i class="bi bi-lightbulb"></i> Consejos Personalizados</h3>
+                        
+                        <% for (const [category, categoryTips] of Object.entries(tips)) { %>
+                            <% if (categoryTips.length > 0) { %>
+                                <h5 class="text-capitalize mb-3">
+                                    <%= category === 'transporte' ? '🚗' : category === 'energia' ? '⚡' : 
+                                        category === 'alimentacion' ? '🍽️' : '🛒' %> <%= category %>
+                                </h5>
+                                
+                                <% categoryTips.forEach(tip => { %>
+                                    <div class="card mb-3 p-3 border-start border-success border-3">
+                                        <h6><%= tip.title %></h6>
+                                        <p class="text-muted mb-2"><%= tip.description %></p>
+                                        <div class="d-flex gap-2">
+                                            <span class="badge bg-success">Ahorra ~<%= tip.reduction %> kg CO₂/año</span>
+                                            <span class="badge <%= tip.difficulty === 'facil' ? 'bg-info' : 
+                                                              tip.difficulty === 'medio' ? 'bg-warning' : 'bg-danger' %>">
+                                                <%= tip.difficulty === 'facil' ? 'Fácil' : 
+                                                    tip.difficulty === 'medio' ? 'Medio' : 'Difícil' %>
+                                            </span>
+                                        </div>
+                                    </div>
+                                <% }); %>
+                            <% } %>
+                        <% } %>
+                    </div>
+
+                    <!-- Acciones -->
+                    <div class="card p-4 text-center">
+                        <h4 class="mb-3">¿Qué hacer ahora?</h4>
+                        <div class="d-flex flex-wrap justify-content-center gap-2">
+                            <a href="/calcular" class="btn btn-primary">
+                                <i class="bi bi-arrow-clockwise"></i> Calcular de Nuevo
+                            </a>
+                            <a href="/descargar-pdf/<%= calculation._id || calculation.id %>" class="btn btn-success" target="_blank">
+                                <i class="bi bi-download"></i> Descargar PDF
+                            </a>
+                            <a href="/consejos" class="btn btn-outline-primary">
+                                <i class="bi bi-lightbulb"></i> Ver Más Consejos
+                            </a>
+                            <a href="/historial" class="btn btn-outline-secondary">
+                                <i class="bi bi-clock-history"></i> Ver Historial
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer text-center">
+        <div class="container">
+            <p class="mb-0">&copy; 2026 EcoCalc</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

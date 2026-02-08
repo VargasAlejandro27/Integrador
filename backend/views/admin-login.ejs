@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - EcoCalc</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #1a3a3a 0%, #27AE60 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .admin-login-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            padding: 50px;
+            max-width: 420px;
+            width: 100%;
+        }
+        
+        .admin-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .admin-header .icon {
+            font-size: 48px;
+            color: #27AE60;
+            margin-bottom: 15px;
+        }
+        
+        .admin-header h2 {
+            color: #1a3a3a;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .admin-header p {
+            color: #7f8c8d;
+            font-size: 14px;
+            margin: 0;
+        }
+        
+        .form-control {
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            padding: 12px 15px;
+            margin-bottom: 15px;
+            transition: all 0.3s;
+        }
+        
+        .form-control:focus {
+            border-color: #27AE60;
+            box-shadow: 0 0 0 0.2rem rgba(39, 174, 96, 0.25);
+        }
+        
+        .btn-login {
+            background: linear-gradient(135deg, #27AE60 0%, #229954 100%);
+            border: none;
+            border-radius: 8px;
+            padding: 12px;
+            font-weight: bold;
+            color: white;
+            width: 100%;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+        
+        .btn-login:hover {
+            background: linear-gradient(135deg, #229954 0%, #1e8449 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(39, 174, 96, 0.4);
+            color: white;
+        }
+        
+        .alert {
+            border-radius: 8px;
+            border: none;
+            margin-bottom: 20px;
+        }
+        
+        .links-section {
+            text-align: center;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+        }
+        
+        .links-section a {
+            color: #27AE60;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+        }
+        
+        .links-section a:hover {
+            text-decoration: underline;
+        }
+        
+        .security-info {
+            background: #f0f8f4;
+            border-left: 4px solid #27AE60;
+            padding: 12px;
+            border-radius: 5px;
+            margin-top: 15px;
+            font-size: 12px;
+            color: #27AE60;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-login-container">
+        <div class="admin-header">
+            <div class="icon"><i class="bi bi-shield-lock"></i></div>
+            <h2>Admin Panel</h2>
+            <p>Acceso Restringido - EcoCalc</p>
+        </div>
+
+        <% if (message) { %>
+            <div class="alert alert-danger" role="alert">
+                <i class="bi bi-exclamation-circle"></i> <%= message %>
+            </div>
+        <% } %>
+
+        <form method="POST" action="/admin/login">
+            <div class="mb-3">
+                <label class="form-label"><i class="bi bi-envelope"></i> Correo Electrónico</label>
+                <input type="email" class="form-control" name="email" placeholder="admin@ecocalc.com" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label"><i class="bi bi-lock"></i> Contraseña</label>
+                <input type="password" class="form-control" name="password" placeholder="••••••••" required>
+            </div>
+
+            <button type="submit" class="btn btn-login">
+                <i class="bi bi-arrow-right-circle"></i> Ingresar al Panel
+            </button>
+        </form>
+
+        <div class="security-info">
+            <i class="bi bi-info-circle"></i> Este panel solo es accesible para administradores autorizados.
+        </div>
+
+        <div class="links-section">
+            <a href="/login"><i class="bi bi-arrow-left"></i> Volver a Login de Usuario</a>
+            <br><br>
+            <a href="/"><i class="bi bi-house"></i> Ir al Inicio</a>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

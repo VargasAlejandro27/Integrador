@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consejos - EcoCalc</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="/"><i class="bi bi-tree"></i> EcoCalc</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="/">Inicio</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/calcular">Calcular</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="/consejos">Consejos</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/historial">Historial</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/acerca">Acerca</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/logout" style="color: #e74c3c;"><i class="bi bi-box-arrow-right"></i> Cerrar Sesión</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="content-wrapper">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="text-center text-white mb-5">
+                        <h1 class="display-4 fw-bold">
+                            <i class="bi bi-lightbulb"></i> Consejos para Reducir tu Huella
+                        </h1>
+                        <p class="lead">Acciones concretas para disminuir tus emisiones de CO₂</p>
+                    </div>
+
+                    <% for (const [category, categoryTips] of Object.entries(tips)) { %>
+                    <div class="card p-4 mb-4">
+                        <h3 class="mb-4">
+                            <%= category === 'transporte' ? '🚗 Transporte' : 
+                                category === 'energia' ? '⚡ Energía' : 
+                                category === 'alimentacion' ? '🍽️ Alimentación' : '🛒 Consumo' %>
+                        </h3>
+
+                        <div class="row g-3">
+                            <% categoryTips.forEach(tip => { %>
+                            <div class="col-md-6">
+                                <div class="card h-100 border-0 shadow-sm">
+                                    <div class="card-body">
+                                        <h5 class="card-title"><%= tip.title %></h5>
+                                        <p class="card-text text-muted"><%= tip.description %></p>
+                                        <div class="d-flex gap-2 flex-wrap">
+                                            <span class="badge bg-success">~<%= tip.reduction %> kg CO₂/año</span>
+                                            <span class="badge <%= tip.difficulty === 'facil' ? 'bg-info' : 
+                                                              tip.difficulty === 'medio' ? 'bg-warning text-dark' : 'bg-danger' %>">
+                                                <%= tip.difficulty === 'facil' ? 'Fácil' : 
+                                                    tip.difficulty === 'medio' ? 'Medio' : 'Difícil' %>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <% }); %>
+                        </div>
+                    </div>
+                    <% } %>
+
+                    <div class="card p-4 text-center">
+                        <h4 class="mb-3">¿Listo para reducir tu huella?</h4>
+                        <p class="text-muted mb-3">Calcula tu huella actual y recibe consejos personalizados</p>
+                        <a href="/calcular" class="btn btn-primary">
+                            <i class="bi bi-calculator"></i> Calcular Mi Huella
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer text-center">
+        <div class="container">
+            <p class="mb-0">&copy; 2026 EcoCalc</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acerca - EcoCalc</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="/"><i class="bi bi-tree"></i> EcoCalc</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="/">Inicio</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/calcular">Calcular</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/consejos">Consejos</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/historial">Historial</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="/acerca">Acerca</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/logout" style="color: #e74c3c;"><i class="bi bi-box-arrow-right"></i> Cerrar Sesión</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="content-wrapper">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="text-center text-white mb-5">
+                        <h1 class="display-4 fw-bold">
+                            <i class="bi bi-info-circle"></i> Acerca de la Huella de Carbono
+                        </h1>
+                    </div>
+
+                    <div class="card p-5 mb-4">
+                        <h2 class="mb-4">¿Qué es la Huella de Carbono?</h2>
+                        <p class="lead">
+                            La huella de carbono es la <strong>totalidad de gases de efecto invernadero</strong> 
+                            emitidos directa o indirectamente por una persona, organización o producto.
+                        </p>
+                        <p>
+                            Se mide en kilogramos de <strong>CO₂ equivalente (CO₂e)</strong>, que incluye 
+                            no solo el CO₂, sino también otros gases como metano y óxido nitroso.
+                        </p>
+                    </div>
+
+                    <div class="card p-5 mb-4">
+                        <h2 class="mb-4">Categorías de Emisiones</h2>
+                        
+                        <div class="mb-4">
+                            <h5><i class="bi bi-car-front text-primary"></i> Transporte</h5>
+                            <p>Vehículos personales, transporte público y vuelos.</p>
+                            <ul>
+                                <li>Auto: ~0.21 kg CO₂ por km</li>
+                                <li>Transporte público: ~0.089 kg CO₂ por hora</li>
+                                <li>Vuelo: ~1,100 kg CO₂ por viaje</li>
+                            </ul>
+                        </div>
+
+                        <div class="mb-4">
+                            <h5><i class="bi bi-lightning text-warning"></i> Energía del Hogar</h5>
+                            <p>Consumo de electricidad y gas natural.</p>
+                            <ul>
+                                <li>Electricidad: ~0.475 kg CO₂ por kWh</li>
+                                <li>Gas natural: ~2.03 kg CO₂ por m³</li>
+                            </ul>
+                        </div>
+
+                        <div class="mb-4">
+                            <h5><i class="bi bi-egg-fried text-success"></i> Alimentación</h5>
+                            <p>Producción de alimentos según tipo de dieta.</p>
+                            <ul>
+                                <li>Carnívoro: ~3,300 kg CO₂/año</li>
+                                <li>Moderado: ~2,200 kg CO₂/año</li>
+                                <li>Vegetariano: ~1,700 kg CO₂/año</li>
+                                <li>Vegano: ~1,500 kg CO₂/año</li>
+                            </ul>
+                        </div>
+
+                        <div class="mb-4">
+                            <h5><i class="bi bi-cart text-info"></i> Consumo</h5>
+                            <p>Productos y servicios que consumimos.</p>
+                            <ul>
+                                <li>Cada compra: ~150 kg CO₂</li>
+                                <li>Reciclar reduce ~10%</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="card p-5 mb-4">
+                        <h2 class="mb-4">Objetivos Globales</h2>
+                        <div class="alert alert-warning">
+                            <h5><i class="bi bi-exclamation-triangle"></i> Meta 2030</h5>
+                            <p>
+                                Para limitar el calentamiento a 1.5°C, necesitamos reducir a 
+                                <strong>menos de 2,300 kg CO₂/año</strong> por persona.
+                            </p>
+                            <p class="mb-0">
+                                El promedio mundial es ~8,000 kg CO₂/año. Necesitamos reducir más del 70%.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="card p-5 text-center">
+                        <h3 class="mb-3">¿Listo para conocer tu impacto?</h3>
+                        <a href="/calcular" class="btn btn-primary btn-lg">
+                            <i class="bi bi-calculator"></i> Calcular Mi Huella Ahora
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer text-center">
+        <div class="container">
+            <p class="mb-0">&copy; 2026 EcoCalc</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

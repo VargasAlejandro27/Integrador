@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historial - EcoCalc</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="/"><i class="bi bi-tree"></i> EcoCalc</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="/">Inicio</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/calcular">Calcular</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/consejos">Consejos</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="/historial">Historial</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/acerca">Acerca</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/logout" style="color: #e74c3c;"><i class="bi bi-box-arrow-right"></i> Cerrar Sesión</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="content-wrapper">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="text-center text-white mb-5">
+                        <h1 class="display-4 fw-bold">
+                            <i class="bi bi-clock-history"></i> Historial de Cálculos
+                        </h1>
+                    </div>
+
+                    <% if (stats) { %>
+                    <div class="row g-4 mb-4">
+                        <div class="col-md-3">
+                            <div class="card text-center p-3">
+                                <div class="display-6 text-primary"><%= stats.total %></div>
+                                <small class="text-muted">Cálculos Totales</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card text-center p-3">
+                                <div class="display-6 text-success"><%= stats.average %></div>
+                                <small class="text-muted">Promedio kg CO₂</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card text-center p-3">
+                                <div class="display-6 text-info"><%= stats.lowest %></div>
+                                <small class="text-muted">Mínimo</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card text-center p-3">
+                                <div class="display-6 text-warning"><%= stats.highest %></div>
+                                <small class="text-muted">Máximo</small>
+                            </div>
+                        </div>
+                    </div>
+                    <% } %>
+
+                    <div class="card p-4">
+                        <h3 class="mb-4">Cálculos Recientes</h3>
+                        
+                        <% if (calculations.length > 0) { %>
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Fecha</th>
+                                        <th>Usuario</th>
+                                        <th>Total CO₂</th>
+                                        <th>Nivel</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% calculations.forEach(calc => { %>
+                                    <tr>
+                                        <td><%= new Date(calc.createdAt).toLocaleDateString('es') %></td>
+                                        <td><%= calc.name %></td>
+                                        <td><strong><%= calc.totalEmissions %></strong> kg</td>
+                                        <td>
+                                            <span class="level-badge level-<%= calc.level %>">
+                                                <%= calc.level === 'excelente' ? 'Excelente' :
+                                                   calc.level === 'bueno' ? 'Bueno' :
+                                                   calc.level === 'promedio' ? 'Promedio' :
+                                                   calc.level === 'alto' ? 'Alto' : 'Muy Alto' %>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <a href="/resultados/<%= calc._id %>" class="btn btn-sm btn-outline-primary">
+                                                <i class="bi bi-eye"></i> Ver
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <% }); %>
+                                </tbody>
+                            </table>
+                        </div>
+                        <% } else { %>
+                        <div class="text-center py-5">
+                            <i class="bi bi-inbox display-1 text-muted"></i>
+                            <p class="text-muted mt-3">No hay cálculos registrados aún</p>
+                            <a href="/calcular" class="btn btn-primary">
+                                <i class="bi bi-calculator"></i> Realizar Primer Cálculo
+                            </a>
+                        </div>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer text-center">
+        <div class="container">
+            <p class="mb-0">&copy; 2026 EcoCalc</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
