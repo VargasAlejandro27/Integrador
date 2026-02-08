@@ -13,17 +13,23 @@ const calculationSchema = new mongoose.Schema({
   },
   name: {
     type: String,
-    default: 'Anónimo'
+    default: 'Anónimo',
+    trim: true,
+    maxlength: 120
   },
-  transportEmissions: Number,
-  energyEmissions: Number,
-  foodEmissions: Number,
-  consumptionEmissions: Number,
+  transportEmissions: { type: Number, min: 0, default: 0 },
+  energyEmissions: { type: Number, min: 0, default: 0 },
+  foodEmissions: { type: Number, min: 0, default: 0 },
+  consumptionEmissions: { type: Number, min: 0, default: 0 },
   totalEmissions: {
     type: Number,
-    required: true
+    required: true,
+    min: 0
   },
-  level: String,
+  level: {
+    type: String,
+    enum: ['excelente', 'bueno', 'promedio', 'alto', 'muy_alto']
+  },
   data: mongoose.Schema.Types.Mixed,
   createdAt: {
     type: Date,

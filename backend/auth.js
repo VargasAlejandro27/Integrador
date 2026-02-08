@@ -3,10 +3,14 @@ const db = require('./db');
 const { Calculation } = require('./mongo-db');
 
 // === REGISTRAR Y AUTENTICAR USUARIOS EN POSTGRESQL ===
+const normalizeEmail = (email) => (email || '').trim().toLowerCase();
+
 async function registerUser(email, name, password, role = 'user') {
+  let client;
   try {
     // Verificar si el usuario ya existe
-    const userExists = await db.query('SELECT id FROM users WHERE email = $1', [email]);
+    const normalizedEmail = normalizeEmail(email);
+    const userExists = await db.query('SELECT id FROM users WHERE email = $1', [normalizedEmail]);
     if (userExists.rows.length > 0) {
       throw new Error('El correo ya está registrado');
     }
@@ -15,22 +19,32 @@ async function registerUser(email, name, password, role = 'user') {
     const saltRounds = 10;
     const passwordHash = await bcrypt.hash(password, saltRounds);
     
-    // Insertar nuevo usuario
-    const result = await db.query(
-      'INSERT INTO users (email, name, password_hash, role) VALUES ($1, $2, $3, $4) RETURNING id, email, name, role',
-      [email, name, passwordHash, role]
+    // Insertar nuevo usuario usando stored procedure + transacción
+    client = await db.pool.connect();
+    await client.query('BEGIN');
+
+    const result = await client.query(
+      'SELECT * FROM register_user($1, $2, $3, $4)',
+      [normalizedEmail, name, passwordHash, role]
     );
-    
+
+    await client.query('COMMIT');
+
     return result.rows[0];
   } catch (err) {
+    if (client) {
+      await client.query('ROLLBACK');
+    }
     throw err;
+  } finally {
+    if (client) client.release();
   }
 }
 
 // Obtener usuario por email
 async function getUserByEmail(email) {
   try {
-    const result = await db.query('SELECT * FROM users WHERE email = $1', [email]);
+    const result = await db.query('SELECT * FROM users WHERE email = $1', [normalizeEmail(email)]);
     return result.rows[0];
   } catch (err) {
     throw err;
@@ -181,26 +195,48 @@ async function getAllCalculations() {
 }
 
 async function updateUserRole(userId, newRole) {
+  let client;
   try {
-    const result = await db.query(
+    client = await db.pool.connect();
+    await client.query('BEGIN');
+
+    const result = await client.query(
       'UPDATE users SET role = $1 WHERE id = $2 RETURNING id, email, name, role',
       [newRole, userId]
     );
+
+    await client.query('COMMIT');
     return result.rows[0];
   } catch (err) {
+    if (client) {
+      await client.query('ROLLBACK');
+    }
     throw err;
+  } finally {
+    if (client) client.release();
   }
 }
 
 async function updateUser(userId, name, email) {
+  let client;
   try {
-    const result = await db.query(
-      'UPDATE users SET name = $1, email = $2 WHERE id = $3 RETURNING id, email, name, role',
-      [name, email, userId]
+    client = await db.pool.connect();
+    await client.query('BEGIN');
+
+    const result = await client.query(
+      'SELECT * FROM update_user_profile($1, $2, $3)',
+      [userId, name, email]
     );
+
+    await client.query('COMMIT');
     return result.rows[0];
   } catch (err) {
+    if (client) {
+      await client.query('ROLLBACK');
+    }
     throw err;
+  } finally {
+    if (client) client.release();
   }
 }
 
@@ -208,6 +244,29 @@ async function deleteCalculation(calculationId) {
   try {
     await Calculation.findByIdAndDelete(calculationId);
     return true;
+  } catch (err) {
+    throw err;
+  }
+}
+
+async function updateCalculationName(userId, calculationId, name) {
+  try {
+    const updated = await Calculation.findOneAndUpdate(
+      { _id: calculationId, userId: userId },
+      { $set: { name: name, updatedAt: new Date() } },
+      { new: true }
+    ).lean();
+
+    return updated;
+  } catch (err) {
+    throw err;
+  }
+}
+
+async function deleteUserCalculation(userId, calculationId) {
+  try {
+    const result = await Calculation.findOneAndDelete({ _id: calculationId, userId: userId });
+    return !!result;
   } catch (err) {
     throw err;
   }
@@ -238,6 +297,8 @@ module.exports = {
   getAllCalculations,
   updateUserRole,
   updateUser,
+  updateCalculationName,
+  deleteUserCalculation,
   deleteCalculation,
   deleteUser
 };

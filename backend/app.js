@@ -86,6 +86,13 @@ const isAdmin = (req, res, next) => {
   res.status(403).send('Acceso denegado. Solo administradores pueden acceder.');
 };
 
+const isApiAuthenticated = (req, res, next) => {
+  if (req.isAuthenticated()) {
+    return next();
+  }
+  return res.status(401).json({ error: 'No autenticado' });
+};
+
 const tips = {
   transporte: [
     {
@@ -421,11 +428,205 @@ app.delete('/admin/api/users/:id', isAdmin, async (req, res) => {
 // Eliminar cálculo
 app.delete('/admin/api/calculations/:id', isAdmin, async (req, res) => {
   try {
-    await auth.deleteCalculation(parseInt(req.params.id));
+    await auth.deleteCalculation(req.params.id);
     res.json({ success: true, message: 'Cálculo eliminado' });
   } catch (err) {
     console.error('Error al eliminar cálculo:', err);
     res.status(500).json({ error: 'Error al eliminar cálculo' });
+  }
+});
+
+// === API PARA FRONTEND REACT ===
+app.get('/api/me', (req, res) => {
+  if (!req.isAuthenticated()) {
+    return res.status(401).json({ error: 'No autenticado' });
+  }
+  return res.json({
+    success: true,
+    user: {
+      id: req.user.id,
+      email: req.user.email,
+      name: req.user.name,
+      role: req.user.role
+    }
+  });
+});
+
+app.post('/api/login', (req, res, next) => {
+  passport.authenticate('local', (err, user, info) => {
+    if (err) {
+      return res.status(500).json({ error: err.message });
+    }
+    if (!user) {
+      return res.status(401).json({ error: info?.message || 'Login fallido' });
+    }
+    req.logIn(user, (loginErr) => {
+      if (loginErr) {
+        return res.status(500).json({ error: loginErr.message });
+      }
+      return res.json({
+        success: true,
+        user: {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+          role: user.role
+        }
+      });
+    });
+  })(req, res, next);
+});
+
+app.post('/api/registro', async (req, res) => {
+  try {
+    const { name, email, password, passwordConfirm } = req.body;
+
+    if (!name || !email || !password || !passwordConfirm) {
+      return res.status(400).json({ error: 'Todos los campos son requeridos' });
+    }
+    if (password !== passwordConfirm) {
+      return res.status(400).json({ error: 'Las contraseñas no coinciden' });
+    }
+    if (password.length < 6) {
+      return res.status(400).json({ error: 'La contraseña debe tener al menos 6 caracteres' });
+    }
+
+    const user = await auth.registerUser(email, name, password);
+
+    req.logIn(user, (err) => {
+      if (err) {
+        return res.status(500).json({ error: 'Error al iniciar sesión' });
+      }
+      return res.json({
+        success: true,
+        user: {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+          role: user.role
+        }
+      });
+    });
+  } catch (err) {
+    return res.status(400).json({ error: err.message });
+  }
+});
+
+app.post('/api/logout', (req, res) => {
+  req.logOut((err) => {
+    if (err) return res.status(500).json({ error: err.message });
+    return res.json({ success: true, message: 'Sesión cerrada' });
+  });
+});
+
+app.post('/api/calcular', isApiAuthenticated, async (req, res) => {
+  const emissions = calculateEmissions(req.body);
+
+  try {
+    const calculationData = {
+      carKm: req.body.carKm,
+      publicTransportHours: req.body.publicTransportHours,
+      flights: req.body.flights,
+      electricity: req.body.electricity,
+      gas: req.body.gas,
+      diet: req.body.diet,
+      shopping: req.body.shopping,
+      recycles: req.body.recycles
+    };
+
+    const result = await auth.saveCalculation(req.user.id, req.body.name || req.user.name, emissions, calculationData);
+
+    if (!result || !result.id) {
+      return res.status(500).json({ error: 'Error al guardar el cálculo' });
+    }
+
+    return res.json({ success: true, id: result.id, emissions });
+  } catch (err) {
+    return res.status(500).json({ error: 'Error al guardar el cálculo: ' + err.message });
+  }
+});
+
+app.get('/api/historial', isApiAuthenticated, async (req, res) => {
+  try {
+    const userCalculations = await auth.getUserCalculations(req.user.id);
+
+    let stats = null;
+    if (userCalculations.length > 0) {
+      const totals = userCalculations.map(c => c.totalEmissions);
+      stats = {
+        total: userCalculations.length,
+        average: Math.round(totals.reduce((a, b) => a + b, 0) / totals.length),
+        lowest: Math.min(...totals),
+        highest: Math.max(...totals)
+      };
+    }
+
+    return res.json({ calculations: userCalculations, stats });
+  } catch (err) {
+    console.error('Error al obtener historial:', err);
+    return res.status(500).json({ error: 'Error al obtener historial' });
+  }
+});
+
+app.get('/api/resultados/:id', isApiAuthenticated, async (req, res) => {
+  try {
+    const calculation = await auth.getCalculation(req.params.id, req.user.id);
+
+    if (!calculation) {
+      return res.status(404).json({ error: 'Cálculo no encontrado' });
+    }
+
+    const emissions = {
+      transport: calculation.transportEmissions,
+      energy: calculation.energyEmissions,
+      food: calculation.foodEmissions,
+      consumption: calculation.consumptionEmissions,
+      total: calculation.totalEmissions,
+      level: calculation.level
+    };
+
+    const relevantTips = getTipsForLevel(emissions.level);
+
+    return res.json({
+      calculation,
+      emissions,
+      tips: relevantTips
+    });
+  } catch (err) {
+    console.error('Error al obtener resultados:', err);
+    return res.status(500).json({ error: 'Error al obtener resultados' });
+  }
+});
+
+app.put('/api/calculations/:id', isApiAuthenticated, async (req, res) => {
+  try {
+    const { name } = req.body;
+    if (!name || name.trim().length < 2) {
+      return res.status(400).json({ error: 'El nombre debe tener al menos 2 caracteres' });
+    }
+
+    const updated = await auth.updateCalculationName(req.user.id, req.params.id, name.trim());
+    if (!updated) {
+      return res.status(404).json({ error: 'Cálculo no encontrado' });
+    }
+
+    return res.json({ success: true, calculation: updated });
+  } catch (err) {
+    console.error('Error al actualizar cálculo:', err);
+    return res.status(500).json({ error: 'Error al actualizar cálculo' });
+  }
+});
+
+app.delete('/api/calculations/:id', isApiAuthenticated, async (req, res) => {
+  try {
+    const deleted = await auth.deleteUserCalculation(req.user.id, req.params.id);
+    if (!deleted) {
+      return res.status(404).json({ error: 'Cálculo no encontrado' });
+    }
+    return res.json({ success: true });
+  } catch (err) {
+    console.error('Error al eliminar cálculo:', err);
+    return res.status(500).json({ error: 'Error al eliminar cálculo' });
   }
 });
 
@@ -884,10 +1085,7 @@ app.get('/descargar-pdf/:id', isAuthenticated, async (req, res) => {
 });
 
 // === INICIALIZAR SERVIDOR Y BASES DE DATOS ===
-Promise.all([
-  db.initializeDatabase(),
-  connectMongoDB()
-]).then(() => {
+const startServer = () => {
   app.listen(PORT, () => {
     console.log(`Servidor corriendo en http://localhost:${PORT}`);
     console.log(`Calculadora de Huella de Carbono iniciada`);
@@ -895,7 +1093,22 @@ Promise.all([
     console.log(`PostgreSQL: Usuarios`);
     console.log(`MongoDB: Cálculos`);
   });
-}).catch(err => {
-  console.error('Error al inicializar la aplicación:', err);
-  process.exit(1);
-});
+};
+
+const shouldSkipDb = process.env.SKIP_DB === 'true';
+
+if (shouldSkipDb) {
+  console.warn('⚠️ SKIP_DB=true: iniciando servidor sin conexión a bases de datos.');
+  startServer();
+} else {
+  Promise.all([
+    db.initializeDatabase(),
+    connectMongoDB()
+  ]).then(() => {
+    startServer();
+  }).catch(err => {
+    console.error('Error al inicializar la aplicación:', err);
+    console.warn('⚠️ Iniciando servidor en modo degradado sin bases de datos.');
+    startServer();
+  });
+}

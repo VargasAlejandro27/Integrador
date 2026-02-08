@@ -23,6 +23,21 @@ export default function Calculate(){
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    setError('')
+
+    const numericFields = ['carKm', 'publicTransportHours', 'flights', 'electricity', 'gas', 'shopping']
+    for (const field of numericFields) {
+      const value = Number(data[field])
+      if (!Number.isFinite(value) || value < 0) {
+        setError('Todos los valores numéricos deben ser mayores o iguales a 0')
+        return
+      }
+    }
+
+    if (!data.diet) {
+      setError('Selecciona un tipo de dieta')
+      return
+    }
     try {
       const res = await fetch('/api/calcular', {
         method: 'POST',

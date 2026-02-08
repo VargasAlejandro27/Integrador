@@ -214,6 +214,7 @@ cd frontend && npm run dev
 - **[PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md)** - Estructura del proyecto
 - **[backend/README.md](backend/README.md)** - Documentación del backend
 - **[frontend/README.md](frontend/README.md)** - Documentación del frontend
+- **[backend/DB_DOCUMENTATION.md](backend/DB_DOCUMENTATION.md)** - Justificación técnica, modelo y seguridad de BD
 - **[backend/DOCUMENTACION_COMPLETA.md](backend/DOCUMENTACION_COMPLETA.md)** - Docs completas
 - **[backend/INICIO_AQUI.md](backend/INICIO_AQUI.md)** - Guía de inicio rápido
 - **[backend/INSTALACION_RAPIDA.md](backend/INSTALACION_RAPIDA.md)** - Instalación rápida
