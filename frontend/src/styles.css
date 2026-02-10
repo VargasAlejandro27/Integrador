@@ -1,9 +1,11 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
 .topbar {
   width: 100%;
 }
 
 .topnav { flex-wrap: wrap; }
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
 
 :root {
   --primary-color: #3de0a8;
@@ -479,7 +481,6 @@ body {
 
 .hero-actions .btn.full { width: 100%; }
 
-  width: 100%;
 .feature-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
