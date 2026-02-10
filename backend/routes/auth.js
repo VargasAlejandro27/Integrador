@@ -49,13 +49,21 @@ router.post('/register', async (req, res) => {
     
     // Crear usuario
     const result = await auth.createUser(email, password, name);
-    if (result.error) {
+    
+    // Verificar si result es un objeto válido con error
+    if (result && typeof result === 'object' && result.error) {
       return res.status(400).json({ error: result.error });
+    }
+    
+    // Si llegamos aquí, el usuario fue creado exitosamente
+    if (!result) {
+      return res.status(500).json({ error: 'Error al procesar el registro' });
     }
     
     res.json({ success: true, message: 'Usuario creado exitosamente' });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error('Error en registro:', err);
+    res.status(500).json({ error: err.message || 'Error al crear usuario' });
   }
 });
 

@@ -37,37 +37,37 @@ export default function Results(){
     <div className="page">
       <h2>Tus Resultados</h2>
       
-      <div style={{background: levelData.bg, color:'white', padding:'28px', borderRadius:'12px', textAlign:'center', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)', maxWidth: '600px', margin: '0 auto 24px auto'}}>
+      <div className="stat-card" style={{background: levelData.bg, color:'white', textAlign:'center', maxWidth: '600px', margin: '0 auto 24px auto'}}>
         <h3 style={{margin: '0 0 8px 0'}}>Total: {total} kg CO₂/año</h3>
         <p style={{fontSize:'18px', textTransform:'uppercase', margin:'0', fontWeight: 700, letterSpacing: '0.5px'}}>{emissions?.level}</p>
       </div>
 
       <div style={{display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(220px, 1fr))', gap:'16px', marginBottom:'28px'}}>
-        <div style={{background: LEVEL_COLORS.excelente.light, padding:'16px', borderRadius:'10px', borderLeft:`4px solid ${COLORS.primary}`}}>
+        <div className="stat-card" style={{background: LEVEL_COLORS.excelente.light, borderLeft:`4px solid ${COLORS.primary}`}}>
           <h4 style={{margin: '0 0 8px 0'}}>🚗 Transporte</h4>
           <p style={{margin:'0', fontSize:'20px', fontWeight:'bold', color: COLORS.primary}}>{emissions?.transport} kg</p>
         </div>
-        <div style={{background: LEVEL_COLORS.promedio.light, padding:'16px', borderRadius:'10px', borderLeft:`4px solid ${CATEGORY_COLORS.energia}`}}>
+        <div className="stat-card" style={{background: LEVEL_COLORS.promedio.light, borderLeft:`4px solid ${CATEGORY_COLORS.energia}`}}>
           <h4 style={{margin: '0 0 8px 0'}}>⚡ Energía</h4>
           <p style={{margin:'0', fontSize:'20px', fontWeight:'bold', color: CATEGORY_COLORS.energia}}>{emissions?.energy} kg</p>
         </div>
-        <div style={{background: LEVEL_COLORS.alto.light, padding:'16px', borderRadius:'10px', borderLeft:`4px solid ${CATEGORY_COLORS.alimentacion}`}}>
+        <div className="stat-card" style={{background: LEVEL_COLORS.alto.light, borderLeft:`4px solid ${CATEGORY_COLORS.alimentacion}`}}>
           <h4 style={{margin: '0 0 8px 0'}}>🍽️ Alimentación</h4>
           <p style={{margin:'0', fontSize:'20px', fontWeight:'bold', color: CATEGORY_COLORS.alimentacion}}>{emissions?.food} kg</p>
         </div>
-        <div style={{background: LEVEL_COLORS.muy_alto.light, padding:'16px', borderRadius:'10px', borderLeft:`4px solid ${CATEGORY_COLORS.consumo}`}}>
+        <div className="stat-card" style={{background: LEVEL_COLORS.muy_alto.light, borderLeft:`4px solid ${CATEGORY_COLORS.consumo}`}}>
           <h4 style={{margin: '0 0 8px 0'}}>🛒 Consumo</h4>
           <p style={{margin:'0', fontSize:'20px', fontWeight:'bold', color: CATEGORY_COLORS.consumo}}>{emissions?.consumption} kg</p>
         </div>
       </div>
 
-      <div style={{marginBottom:'24px', background: COLORS.bgLighter, padding: '20px', borderRadius: '10px'}}>
-        <h3 style={{marginTop: 0}}>Desglose Porcentual</h3>
+      <div className="card-light" style={{marginBottom:'24px'}}>
+        <h3 style={{marginTop: 0, color: COLORS.textPrimary}}>Desglose Porcentual</h3>
         <ul style={{listStyle:'none', padding:'0', margin: 0}}>
-          <li style={{padding: '8px 0'}}>🚗 Transporte: <strong style={{color: COLORS.primary}}>{((emissions?.transport/total)*100).toFixed(1)}%</strong></li>
-          <li style={{padding: '8px 0'}}>⚡ Energía: <strong style={{color: CATEGORY_COLORS.energia}}>{((emissions?.energy/total)*100).toFixed(1)}%</strong></li>
-          <li style={{padding: '8px 0'}}>🍽️ Alimentación: <strong style={{color: CATEGORY_COLORS.alimentacion}}>{((emissions?.food/total)*100).toFixed(1)}%</strong></li>
-          <li style={{padding: '8px 0'}}>🛒 Consumo: <strong style={{color: CATEGORY_COLORS.consumo}}>{((emissions?.consumption/total)*100).toFixed(1)}%</strong></li>
+          <li style={{padding: '8px 0', color: COLORS.textPrimary}}>🚗 Transporte: <strong style={{color: COLORS.primary}}>{((emissions?.transport/total)*100).toFixed(1)}%</strong></li>
+          <li style={{padding: '8px 0', color: COLORS.textPrimary}}>⚡ Energía: <strong style={{color: CATEGORY_COLORS.energia}}>{((emissions?.energy/total)*100).toFixed(1)}%</strong></li>
+          <li style={{padding: '8px 0', color: COLORS.textPrimary}}>🍽️ Alimentación: <strong style={{color: CATEGORY_COLORS.alimentacion}}>{((emissions?.food/total)*100).toFixed(1)}%</strong></li>
+          <li style={{padding: '8px 0', color: COLORS.textPrimary}}>🛒 Consumo: <strong style={{color: CATEGORY_COLORS.consumo}}>{((emissions?.consumption/total)*100).toFixed(1)}%</strong></li>
         </ul>
       </div>
 
@@ -84,7 +84,7 @@ export default function Results(){
                   }</h4>
                   <div style={{display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(280px, 1fr))', gap:'12px'}}>
                     {result.tips[category].map((tip, idx) => (
-                      <div key={idx} style={{background: 'white', padding: '16px', borderRadius: '10px', boxShadow: '0 1px 2px rgba(0,0,0,0.05)', border: `1px solid ${COLORS.border}`, borderLeft: `4px solid ${CATEGORY_COLORS[category] || COLORS.primary}`}}>
+                      <div key={idx} className="tip-card" style={{borderLeft: `4px solid ${CATEGORY_COLORS[category] || COLORS.primary}`}}>
                         <strong style={{color: COLORS.textPrimary}}>{tip.title}</strong>
                         <p style={{margin:'8px 0 0', fontSize: '0.9rem', color: COLORS.textSecondary}}>{tip.description}</p>
                         <small style={{color: COLORS.textSecondary, display: 'block', marginTop: '8px'}}>📉 Reducción: <strong style={{color: COLORS.primary}}>{tip.reduction} kg CO₂/año</strong></small>

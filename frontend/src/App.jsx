@@ -1,5 +1,5 @@
 import React from 'react'
-import { Routes, Route, Link } from 'react-router-dom'
+import { Routes, Route, Link, useNavigate } from 'react-router-dom'
 import Home from './pages/Home'
 import Calculate from './pages/Calculate'
 import Results from './pages/Results'
@@ -12,9 +12,10 @@ import { AuthContext } from './auth/AuthProvider'
 
 export default function App(){
   const { user, logout } = React.useContext(AuthContext)
+  const navigate = useNavigate()
   const handleLogout = async () => {
     await logout()
-    window.location.href = '/'
+    navigate('/')
   }
 
   return (

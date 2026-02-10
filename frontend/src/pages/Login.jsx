@@ -25,13 +25,13 @@ export default function Login(){
     }
     try {
       const result = await login(email, password)
-      if (result.success) {
+      if (result && result.success) {
         navigate(from, { replace: true })
       } else {
-        setError(result.error || 'Login fallido')
+        setError(result?.error || 'Login fallido')
       }
     } catch (err) {
-      setError('Error de conexión: ' + err.message)
+      setError(err?.message || 'Error de conexión')
     }
   }
 

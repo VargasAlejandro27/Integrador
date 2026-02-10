@@ -19,6 +19,20 @@
     --text-secondary: #6b7280;
 }
 
+/* Utilities for light content blocks used by server-rendered views */
+.card-light {
+    background: var(--bg-lighter);
+    color: var(--text-primary);
+    padding: 18px;
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+}
+
+.section-title { font-size: 1.2rem; font-weight: 800; margin: 0 0 12px 0; color: var(--text-primary); }
+
+.stat-card { padding: 12px 14px; border-radius: 10px; box-shadow: 0 8px 24px rgba(2,6,23,0.12); }
+
+
 /* Login & Registro comunes */
 body.login-gradient {
     min-height: 100vh;
@@ -91,20 +105,21 @@ body {
 }
 
 .form-control {
-    border: 1px solid var(--border-color);
+    border: 1px solid #fff;
     border-radius: 8px;
     padding: 12px 14px;
     font-size: 0.95rem;
     transition: all 0.25s ease;
     width: 100%;
     font-family: inherit;
+    color: #fff;
 }
 
 .form-control:focus {
     outline: none;
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
-    background: #fafbff;
+    box-shadow: 0 0 0 3px rgba(61,224,168,0.12);
+    background: rgba(255,255,255,0.03);
 }
 
 .btn-login,

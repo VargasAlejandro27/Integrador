@@ -32,9 +32,9 @@ async function createAdmin() {
     try {
       await client.query('BEGIN');
 
-      // Insertar usuario admin usando stored procedure
+      // Insertar usuario admin directamente
       const result = await client.query(
-        'SELECT * FROM register_user($1, $2, $3, $4)',
+        'INSERT INTO users (email, name, password_hash, role) VALUES ($1, $2, $3, $4) RETURNING id, email, name, role',
         [email.toLowerCase().trim(), name, passwordHash, 'admin']
       );
 

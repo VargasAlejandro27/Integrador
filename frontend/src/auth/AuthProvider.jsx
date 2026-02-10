@@ -8,7 +8,7 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     // Revisa sesión en el backend
-    fetch('/api/me', { credentials: 'include' })
+    fetch('/api/auth/me', { credentials: 'include' })
       .then(async res => {
         if (!res.ok) return { user: null }
         return res.json()
@@ -21,42 +21,60 @@ export function AuthProvider({ children }) {
   }, [])
 
   async function login(email, password) {
-    const res = await fetch('/api/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
-      body: JSON.stringify({ email, password })
-    })
-    const data = await res.json()
-    if (res.ok) {
-      setUser(data.user)
-      return { success: true }
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ email, password })
+      })
+      const data = await res.json()
+      if (res.ok && data?.user) {
+        setUser(data.user)
+        return { success: true, user: data.user }
+      }
+      const errorMsg = data?.error || 'Error al iniciar sesión'
+      return { success: false, error: typeof errorMsg === 'string' ? errorMsg : JSON.stringify(errorMsg) }
+    } catch (err) {
+      return { success: false, error: err?.message || 'Error de conexión' }
     }
-    return { success: false, error: data.error }
   }
 
   async function register(payload) {
-    const res = await fetch('/api/registro', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
-      body: JSON.stringify(payload)
-    })
-    const data = await res.json()
-    if (res.ok) {
-      setUser(data.user)
-      return { success: true }
+    try {
+      const res = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify(payload)
+      })
+      const data = await res.json()
+      if (res.ok) {
+        // El endpoint de registro no autentica automáticamente.
+        // Devolver el mensaje y no fijar `user` aquí.
+        return { success: true, message: data?.message || 'Registro exitoso' }
+      }
+      // Asegurar que siempre retornamos un objeto con error válido
+      const errorMsg = data?.error || 'Error al registrar usuario'
+      return { success: false, error: typeof errorMsg === 'string' ? errorMsg : JSON.stringify(errorMsg) }
+    } catch (err) {
+      return { success: false, error: err?.message || 'Error de conexión' }
     }
-    return { success: false, error: data.error }
   }
 
   async function logout() {
     try {
-      await fetch('/api/logout', { credentials: 'include' })
-    } catch (e) {
-      // ignore
+      const res = await fetch('/api/auth/logout', { 
+        method: 'POST',
+        credentials: 'include' 
+      })
+      const data = await res.json()
+      setUser(null)
+      return { success: true, message: data.message || 'Sesión cerrada' }
+    } catch (err) {
+      setUser(null)
+      return { success: false, error: err?.message || 'Error al cerrar sesión' }
     }
-    setUser(null)
   }
 
   return (

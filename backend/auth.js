@@ -6,7 +6,6 @@ const { Calculation } = require('./mongo-db');
 const normalizeEmail = (email) => (email || '').trim().toLowerCase();
 
 async function registerUser(email, name, password, role = 'user') {
-  let client;
   try {
     // Verificar si el usuario ya existe
     const normalizedEmail = normalizeEmail(email);
@@ -19,25 +18,32 @@ async function registerUser(email, name, password, role = 'user') {
     const saltRounds = 10;
     const passwordHash = await bcrypt.hash(password, saltRounds);
     
-    // Insertar nuevo usuario usando stored procedure + transacción
-    client = await db.pool.connect();
-    await client.query('BEGIN');
-
-    const result = await client.query(
-      'SELECT * FROM register_user($1, $2, $3, $4)',
+    // Insertar nuevo usuario directamente
+    const result = await db.query(
+      'INSERT INTO users (email, name, password_hash, role) VALUES ($1, $2, $3, $4) RETURNING id, email, name, role',
       [normalizedEmail, name, passwordHash, role]
     );
 
-    await client.query('COMMIT');
+    if (!result.rows || !result.rows[0]) {
+      throw new Error('Error al crear usuario');
+    }
 
     return result.rows[0];
   } catch (err) {
-    if (client) {
-      await client.query('ROLLBACK');
-    }
     throw err;
-  } finally {
-    if (client) client.release();
+  }
+}
+
+// Compatibilidad: wrapper que mantiene la API usada en las rutas
+// Algunas rutas llaman a `auth.createUser(email, password, name)`
+// `registerUser` espera (email, name, password), así que exponemos
+// `createUser` con la firma que las rutas actuales usan.
+async function createUser(email, password, name, role = 'user') {
+  try {
+    return await registerUser(email, name, password, role);
+  } catch (err) {
+    // Retornar objeto con error en lugar de lanzar excepción
+    return { error: err.message || 'Error al crear usuario' };
   }
 }
 
@@ -286,6 +292,7 @@ async function deleteUser(userId) {
 
 module.exports = {
   registerUser,
+  createUser,
   getUserByEmail,
   getUserById,
   verifyPassword,

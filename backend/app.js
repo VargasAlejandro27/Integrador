@@ -71,6 +71,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
+// Montar rutas API (backend/routes -> expone /auth, /calculate, /admin)
+const apiRoutes = require('./routes');
+app.use('/api', apiRoutes);
+
 // === MIDDLEWARE DE AUTENTICACIÓN ===
 const isAuthenticated = (req, res, next) => {
   if (req.isAuthenticated()) {

@@ -126,9 +126,10 @@ async function initializeDatabase() {
       )
       RETURNS TABLE (id INTEGER, email TEXT, name TEXT, role TEXT) AS $$
       BEGIN
+        RETURN QUERY
         INSERT INTO users (email, name, password_hash, role)
         VALUES (lower(trim(p_email)), trim(p_name), p_password_hash, p_role)
-        RETURNING users.id, users.email, users.name, users.role INTO id, email, name, role;
+        RETURNING users.id, users.email, users.name, users.role;
       END;
       $$ LANGUAGE plpgsql;
     `);
@@ -142,10 +143,11 @@ async function initializeDatabase() {
       )
       RETURNS TABLE (id INTEGER, email TEXT, name TEXT, role TEXT) AS $$
       BEGIN
+        RETURN QUERY
         UPDATE users
         SET name = trim(p_name), email = lower(trim(p_email))
         WHERE id = p_user_id
-        RETURNING users.id, users.email, users.name, users.role INTO id, email, name, role;
+        RETURNING users.id, users.email, users.name, users.role;
       END;
       $$ LANGUAGE plpgsql;
     `);

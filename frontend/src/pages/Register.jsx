@@ -5,6 +5,7 @@ import { AuthContext } from '../auth/AuthProvider'
 export default function Register(){
   const [form, setForm] = useState({ name: '', email: '', password: '', confirmPassword: '' })
   const [error, setError] = useState('')
+  const [success, setSuccess] = useState('')
   const navigate = useNavigate()
   const { register } = useContext(AuthContext)
 
@@ -41,14 +42,28 @@ export default function Register(){
         password: form.password,
         passwordConfirm: form.confirmPassword
       })
+      
+      // Validar que result es un objeto válido
+      if (!result || typeof result !== 'object') {
+        setSuccess('')
+        setError('Error inesperado. Intenta de nuevo.')
+        return
+      }
+      
       if (result.success) {
-        alert('Cuenta creada exitosamente. Iniciando sesión...')
-        navigate('/')
+        setError('')
+        setSuccess(result.message || '✅ Cuenta creada exitosamente')
+        // Limpiar formulario
+        setForm({ name: '', email: '', password: '', confirmPassword: '' })
+        // Redirigir después de 2 segundos
+        setTimeout(() => navigate('/login'), 2000)
       } else {
-        setError(result.error || 'Registro fallido')
+        setSuccess('')
+        setError(result.error || 'Error al registrarse. Intenta nuevamente.')
       }
     } catch (err) {
-      setError('Error de conexión: ' + err.message)
+      setSuccess('')
+      setError(err?.message || 'Error de conexión. Verifica tu conexión a internet.')
     }
   }
 
@@ -60,6 +75,7 @@ export default function Register(){
           <p className="muted">Tendrás historial, reportes y consejos personalizados.</p>
 
           {error && <div className="error-banner">{error}</div>}
+          {success && <div className="success-banner">{success}</div>}
 
           <form onSubmit={submit} className="auth-form">
             <label>Nombre
