@@ -57,174 +57,99 @@ export default function Calculate(){
   }
 
   return (
-    <div className="page">
-      <h2 style={{color: COLORS.primary, marginBottom: 24}}>📊 Calcular Huella de Carbono</h2>
+    <div className="page page-split">
+      <div className="panel">
+        <div className="panel-header">
+          <h2>📊 Calcular Huella de Carbono</h2>
+          <p className="muted">Completa los campos clave; validamos datos negativos automáticamente.</p>
+        </div>
 
-      {error && <div style={{color: 'white', marginBottom:'20px', padding:'16px', backgroundColor: COLORS.danger, borderRadius:'10px', fontWeight: 400}}>{error}</div>}
-      
-      <form onSubmit={handleSubmit} style={{maxWidth:'900px'}}>
-        
-        {/* Transporte */}
-        <fieldset style={{width: '100%', boxSizing: 'border-box', border: `1px solid ${CATEGORY_COLORS.transporte}`, borderLeft: `4px solid ${CATEGORY_COLORS.transporte}`, background: `${CATEGORY_COLORS.transporte}10`, paddingLeft: '20px', paddingRight: '20px', paddingBottom: '20px', paddingTop: '15px'}}>
-          <legend style={{color: CATEGORY_COLORS.transporte, fontWeight: 700}}>🚗 Transporte</legend>
-          
-          <div style={{marginBottom: 20}}>
-            <label style={{display: 'block', marginBottom: 8, fontWeight: 500, color: COLORS.textPrimary}}>
-              Km en auto por semana
+        {error && <div className="alert-banner danger">{error}</div>}
+
+        <form onSubmit={handleSubmit} className="form-grid">
+          <fieldset className="form-section transporte">
+            <legend>🚗 Transporte</legend>
+
+            <label className="stack">
+              <span>Kilómetros en auto por semana</span>
+              <input type="number" name="carKm" value={data.carKm} onChange={handleChange} min="0" />
             </label>
-            <input 
-              type="number" 
-              name="carKm" 
-              value={data.carKm} 
-              onChange={handleChange} 
-              min="0"
-              style={{width: '100%', padding: '8px 10px', border: `1px solid ${COLORS.border}`, borderRadius: '8px', fontSize: '0.85rem', fontFamily: 'inherit'}}
-            />
-          </div>
 
-          <div style={{marginBottom: 20}}>
-            <label style={{display: 'block', marginBottom: 8, fontWeight: 500, color: COLORS.textPrimary}}>
-              Horas de transporte público por semana
+            <label className="stack">
+              <span>Horas de transporte público por semana</span>
+              <input type="number" name="publicTransportHours" value={data.publicTransportHours} onChange={handleChange} min="0" />
             </label>
-            <input 
-              type="number"     
-              name="publicTransportHours" 
-              value={data.publicTransportHours} 
-              onChange={handleChange} 
-              min="0"
-              style={{width: '100%', padding: '8px 10px', border: `1px solid ${COLORS.border}`, borderRadius: '8px', fontSize: '0.85rem', fontFamily: 'inherit'}}
-            />
-          </div>
 
-          <div style={{marginBottom: 0}}>
-            <label style={{display: 'block', marginBottom: 8, fontWeight: 600, color: COLORS.textPrimary}}>
-              Vuelos por año
+            <label className="stack">
+              <span>Vuelos por año</span>
+              <input type="number" name="flights" value={data.flights} onChange={handleChange} min="0" />
             </label>
-            <input 
-              type="number" 
-              name="flights" 
-              value={data.flights} 
-              onChange={handleChange} 
-              min="0"
-              style={{width: '100%', padding: '8px 10px', border: `1px solid ${COLORS.border}`, borderRadius: '8px', fontSize: '0.85rem', fontFamily: 'inherit'}}
-            />
-          </div>
-        </fieldset>
+          </fieldset>
 
-        {/* Energía */}
-        <fieldset style={{width: '100%', boxSizing: 'border-box', border: `1px solid ${CATEGORY_COLORS.energia}`, borderLeft: `4px solid ${CATEGORY_COLORS.energia}`, background: `${CATEGORY_COLORS.energia}10`, paddingLeft: '20px', paddingRight: '20px', paddingBottom: '20px', paddingTop: '15px', marginTop: 24}}>
-          <legend style={{color: CATEGORY_COLORS.energia, fontWeight: 700}}>⚡ Energía</legend>
-          
-          <div style={{marginBottom: 20}}>
-            <label style={{display: 'block', marginBottom: 8, fontWeight: 600, color: COLORS.textPrimary}}>
-              Consumo eléctrico (kWh/mes)
+          <fieldset className="form-section energia">
+            <legend>⚡ Energía</legend>
+
+            <label className="stack">
+              <span>Consumo eléctrico (kWh/mes)</span>
+              <input type="number" name="electricity" value={data.electricity} onChange={handleChange} min="0" />
             </label>
-            <input 
-              type="number" 
-              name="electricity" 
-              value={data.electricity} 
-              onChange={handleChange} 
-              min="0"
-              style={{width: '100%', padding: '8px 10px', border: `1px solid ${COLORS.border}`, borderRadius: '8px', fontSize: '0.85rem', fontFamily: 'inherit'}}
-            />
-          </div>
 
-          <div style={{marginBottom: 0}}>
-            <label style={{display: 'block', marginBottom: 8, fontWeight: 600, color: COLORS.textPrimary}}>
-              Consumo gas (m³/mes)
+            <label className="stack">
+              <span>Consumo de gas (m³/mes)</span>
+              <input type="number" name="gas" value={data.gas} onChange={handleChange} min="0" />
             </label>
-            <input 
-              type="number" 
-              name="gas" 
-              value={data.gas} 
-              onChange={handleChange} 
-              min="0"
-              style={{width: '100%', padding: '8px 10px', border: `1px solid ${COLORS.border}`, borderRadius: '8px', fontSize: '0.85rem', fontFamily: 'inherit'}}
-            />
-          </div>
-        </fieldset>
+          </fieldset>
 
-        {/* Alimentación */}
-        <fieldset style={{width: '100%', boxSizing: 'border-box', border: `1px solid ${CATEGORY_COLORS.alimentacion}`, borderLeft: `4px solid ${CATEGORY_COLORS.alimentacion}`, background: `${CATEGORY_COLORS.alimentacion}10`, paddingLeft: '20px', paddingRight: '20px', paddingBottom: '20px', paddingTop: '15px', marginTop: 24}}>
-          <legend style={{color: CATEGORY_COLORS.alimentacion, fontWeight: 700}}>🍽️ Alimentación</legend>
-          
-          <div style={{marginBottom: 0}}>
-            <label style={{display: 'block', marginBottom: 8, fontWeight: 600, color: COLORS.textPrimary}}>
-              Tipo de dieta
+          <fieldset className="form-section alimentacion">
+            <legend>🍽️ Alimentación</legend>
+            <label className="stack">
+              <span>Tipo de dieta</span>
+              <select name="diet" value={data.diet} onChange={handleChange}>
+                <option value="carnivoro">🥩 Carnívoro</option>
+                <option value="moderado">🍗 Moderado (recomendado)</option>
+                <option value="vegetariano">🥬 Vegetariano</option>
+                <option value="vegano">🌱 Vegano</option>
+              </select>
             </label>
-            <select 
-              name="diet" 
-              value={data.diet} 
-              onChange={handleChange}
-              style={{width: '100%', padding: '8px 10px', border: `1px solid ${COLORS.border}`, borderRadius: '8px', fontSize: '0.85rem', fontFamily: 'inherit', background: 'white', cursor: 'pointer'}}
-            >
-              <option value="carnivoro">🥩 Carnívoro</option>
-              <option value="moderado">🍗 Moderado (recomendado)</option>
-              <option value="vegetariano">🥬 Vegetariano</option>
-              <option value="vegano">🌱 Vegano</option>
-            </select>
-          </div>
-        </fieldset>
+          </fieldset>
 
-        {/* Consumo */}
-        <fieldset style={{width: '100%', boxSizing: 'border-box', border: `1px solid ${CATEGORY_COLORS.consumo}`, borderLeft: `4px solid ${CATEGORY_COLORS.consumo}`, background: `${CATEGORY_COLORS.consumo}10`, paddingLeft: '20px', paddingRight: '20px', paddingBottom: '20px', paddingTop: '15px', marginTop: 24}}>
-          <legend style={{color: CATEGORY_COLORS.consumo, fontWeight: 700}}>🛒 Consumo</legend>
-          
-          <div style={{marginBottom: 20}}>
-            <label style={{display: 'block', marginBottom: 8, fontWeight: 600, color: COLORS.textPrimary}}>
-              Compras por mes
+          <fieldset className="form-section consumo">
+            <legend>🛒 Consumo</legend>
+
+            <label className="stack">
+              <span>Compras por mes</span>
+              <input type="number" name="shopping" value={data.shopping} onChange={handleChange} min="0" />
             </label>
-            <input 
-              type="number" 
-              name="shopping" 
-              value={data.shopping} 
-              onChange={handleChange} 
-              min="0"
-              style={{width: '100%', padding: '8px 10px', border: `1px solid ${COLORS.border}`, borderRadius: '8px', fontSize: '0.85rem', fontFamily: 'inherit'}}
-            />
-          </div>
 
-          <div style={{display: 'flex', alignItems: 'center', gap: 6}}>
-            <input 
-              type="checkbox" 
-              name="recycles" 
-              checked={data.recycles} 
-              onChange={handleChange}
-              style={{width: 12, height: 12, cursor: 'pointer', accentColor: COLORS.primary}}
-            />
-            <label style={{fontWeight: 400, fontSize: '0.75rem', color: COLORS.textPrimary, cursor: 'pointer', margin: 0}}>
-              ♻️ Reciclo mis productos
+            <label className="inline-check">
+              <input type="checkbox" name="recycles" checked={data.recycles} onChange={handleChange} />
+              <span>♻️ Reciclo mis productos</span>
             </label>
-          </div>
-        </fieldset>
+          </fieldset>
 
-        <button 
-          type="submit" 
-          style={{
-            marginTop: '28px',
-            width: '100%',
-            padding: '14px',
-            background: `linear-gradient(135deg, ${COLORS.primary}, ${COLORS.primaryDark})`,
-            color: 'white',
-            border: 'none',
-            borderRadius: '8px',
-            fontWeight: 700,
-            fontSize: '1rem',
-            cursor: 'pointer',
-            transition: 'all 0.3s ease'
-          }}
-          onMouseEnter={(e) => {
-            e.target.style.transform = 'translateY(-2px)';
-            e.target.style.boxShadow = '0 10px 15px -3px rgba(16, 185, 129, 0.3)';
-          }}
-          onMouseLeave={(e) => {
-            e.target.style.transform = 'translateY(0)';
-            e.target.style.boxShadow = 'none';
-          }}
-        >
-          🧮 Calcular Huella de Carbono
-        </button>
-      </form>
+          <button type="submit" className="btn full">🧮 Calcular huella</button>
+        </form>
+      </div>
+
+      <aside className="panel panel-accent">
+        <h3>Cómo funciona</h3>
+        <ul className="bullet-list">
+          <li>Validamos que los valores no sean negativos antes de enviar.</li>
+          <li>Los resultados se guardan en tu historial con tu sesión.</li>
+          <li>Recibirás consejos priorizados por impacto y esfuerzo.</li>
+        </ul>
+
+        <div className="stat-strip">
+          <div className="stat-pill">Transporte • mayor peso</div>
+          <div className="stat-pill alt">Energía • optimiza kWh</div>
+          <div className="stat-pill warm">Consumo • recicle y reduzca</div>
+        </div>
+
+        <div className="mini-card">
+          <p className="label">Tips rápidos</p>
+          <p className="muted">Agrupa compras, reduce vuelos cortos y ajusta termostato: suelen recortar hasta 18%.</p>
+        </div>
+      </aside>
     </div>
   )
 }

@@ -18,23 +18,36 @@ export default function App(){
   }
 
   return (
-    <div>
-      <nav className="nav">
-        <Link to="/">Inicio</Link>
-        <Link to="/calcular">Calcular</Link>
-        <Link to="/historial">Historial</Link>
-        <Link to="/consejos">Consejos</Link>
-        {user ? (
-          <>
-            {user.role === 'admin' && <a href="/admin/dashboard" style={{color:'#2b6cb0',fontWeight:600}}>Admin</a>}
-            <button onClick={handleLogout} style={{background:'transparent',border:0,color:'#27AE60',fontWeight:600,cursor:'pointer'}}>Salir</button>
-          </>
-        ) : (
-          <Link to="/login">Login</Link>
-        )}
-      </nav>
+    <div className="app-shell">
+      <header className="topbar">
+        <div className="brand-wrap">
+          <Link to="/" className="brand">EcoCalc</Link>
+        </div>
 
-      <main>
+        <nav className="topnav">
+          <Link to="/">Inicio</Link>
+          <Link to="/calcular">Calcular</Link>
+          <Link to="/historial">Historial</Link>
+          <Link to="/consejos">Consejos</Link>
+          {user?.role === 'admin' && <a href="/admin/dashboard" className="admin-link">Admin</a>}
+        </nav>
+
+        <div className="top-actions">
+          {user ? (
+            <>
+              <span className="user-chip">Hola, {user.name || user.email}</span>
+              <button className="ghost" onClick={handleLogout}>Salir</button>
+            </>
+          ) : (
+            <>
+              <Link className="ghost" to="/login">Ingresar</Link>
+              <Link className="btn" to="/registro">Crear cuenta</Link>
+            </>
+          )}
+        </div>
+      </header>
+
+      <main className="page-shell">
         <Routes>
           <Route path="/" element={<Home/>} />
           <Route path="/calcular" element={<RequireAuth><Calculate/></RequireAuth>} />

@@ -53,27 +53,42 @@ export default function Register(){
   }
 
   return (
-    <div className="page">
-      <h2>Crear cuenta</h2>
-      {error && <div style={{color:'#d32f2f', marginBottom:'10px', padding:'10px', backgroundColor:'#ffebee', borderRadius:'5px'}}>{error}</div>}
-      <form onSubmit={submit}>
-        <label>Nombre
-          <input placeholder="Tu nombre" value={form.name} onChange={e=>setForm({...form, name:e.target.value})} required minLength={2} />
-        </label>
-        <label>Email
-          <input placeholder="tu@email.com" type="email" value={form.email} onChange={e=>setForm({...form, email:e.target.value})} required />
-        </label>
-        <label>Contraseña
-          <input placeholder="Contraseña" type="password" value={form.password} onChange={e=>setForm({...form, password:e.target.value})} required minLength={8} />
-        </label>
-        <label>Confirmar Contraseña
-          <input placeholder="Repite contraseña" type="password" value={form.confirmPassword} onChange={e=>setForm({...form, confirmPassword:e.target.value})} required minLength={8} />
-        </label>
-        <button type="submit">Crear cuenta</button>
-      </form>
-      <p style={{textAlign:'center', marginTop:'15px'}}>
-        ¿Ya tienes cuenta? <Link to="/login" style={{color:'#27AE60'}}>Inicia sesión aquí</Link>
-      </p>
+    <div className="page auth-page">
+      <div className="auth-grid">
+        <div className="auth-card">
+          <h2>Crea tu cuenta</h2>
+          <p className="muted">Tendrás historial, reportes y consejos personalizados.</p>
+
+          {error && <div className="error-banner">{error}</div>}
+
+          <form onSubmit={submit} className="auth-form">
+            <label>Nombre
+              <input placeholder="Tu nombre" value={form.name} onChange={e=>setForm({...form, name:e.target.value})} required minLength={2} />
+            </label>
+            <label>Email
+              <input placeholder="tu@email.com" type="email" value={form.email} onChange={e=>setForm({...form, email:e.target.value})} required />
+            </label>
+            <label>Contraseña
+              <input placeholder="Mínimo 8 caracteres" type="password" value={form.password} onChange={e=>setForm({...form, password:e.target.value})} required minLength={8} />
+            </label>
+            <label>Confirmar Contraseña
+              <input placeholder="Repite contraseña" type="password" value={form.confirmPassword} onChange={e=>setForm({...form, confirmPassword:e.target.value})} required minLength={8} />
+            </label>
+
+            <button type="submit" className="btn full">Crear cuenta</button>
+            <Link to="/login" className="ghost full" style={{textAlign:'center'}}>¿Ya tienes cuenta? Inicia sesión</Link>
+          </form>
+        </div>
+
+        <div className="auth-panel">
+          <p className="label">Incluye</p>
+          <ul className="bullet-list">
+            <li>Historial ilimitado de cálculos.</li>
+            <li>PDF listos para enviar.</li>
+            <li>Consejos priorizados por impacto.</li>
+          </ul>
+        </div>
+      </div>
     </div>
   )
 }

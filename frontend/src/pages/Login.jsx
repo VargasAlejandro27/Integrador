@@ -36,27 +36,34 @@ export default function Login(){
   }
 
   return (
-    <div className="page" style={{display:'flex',justifyContent:'center'}}>
-      <div style={{width:480}}>
-        <div className="card">
-          <h2>Iniciar sesión</h2>
+    <div className="page auth-page">
+      <div className="auth-grid">
+        <div className="auth-card">
+          <h2>Bienvenido de vuelta</h2>
+          <p className="muted">Accede para seguir midiendo y descargar reportes.</p>
 
-          {error && <div className="error" style={{marginTop:12}}>{error}</div>}
+          {error && <div className="error-banner">{error}</div>}
 
-          <form onSubmit={submit} style={{marginTop:12}}>
+          <form onSubmit={submit} className="auth-form">
             <label>Email
               <input placeholder="tu@email.com" type="email" value={email} onChange={e=>setEmail(e.target.value)} required />
             </label>
-            <label style={{marginTop:10}}>Contraseña
-              <input placeholder="Contraseña" type="password" value={password} onChange={e=>setPassword(e.target.value)} required />
+            <label>Contraseña
+              <input placeholder="••••••••" type="password" value={password} onChange={e=>setPassword(e.target.value)} required />
             </label>
 
-            <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginTop:14}}>
-              <button type="submit" className="btn">Entrar</button>
-              <Link to="/registro" className="btn secondary">Crear cuenta</Link>
-            </div>
+            <button type="submit" className="btn full">Entrar</button>
+            <Link to="/registro" className="ghost full" style={{textAlign:'center'}}>¿Nuevo? Crear cuenta</Link>
           </form>
+        </div>
 
+        <div className="auth-panel">
+          <p className="label">Beneficios</p>
+          <ul className="bullet-list">
+            <li>Historial y PDF listos para compartir.</li>
+            <li>Consejos personalizados por categoría.</li>
+            <li>Acceso seguro con sesiones cifradas.</li>
+          </ul>
         </div>
       </div>
     </div>
